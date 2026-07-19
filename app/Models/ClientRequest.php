@@ -43,4 +43,9 @@ class ClientRequest extends Model
     {
         return $this->hasMany(MediaFile::class, 'request_id');
     }
+
+    public function replies()
+    {
+        return $this->hasMany(Reply::class, 'request_id')->with(['user', 'admin'])->oldest();
+    }
 }

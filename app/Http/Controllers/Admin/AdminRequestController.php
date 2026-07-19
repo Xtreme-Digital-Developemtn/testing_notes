@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
+use App\Models\AdminNotification;
 use App\Models\ClientRequest;
 use App\Models\Notification;
+use App\Models\Reply;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -64,7 +66,7 @@ class AdminRequestController extends Controller
 
     public function show($id)
     {
-        $clientRequest = ClientRequest::with(['user', 'mediaFiles', 'messages.admin', 'solver'])->findOrFail($id);
+        $clientRequest = ClientRequest::with(['user', 'mediaFiles', 'messages.admin', 'solver', 'replies.user', 'replies.admin'])->findOrFail($id);
 
         return view('admin.requests.show', compact('clientRequest'));
     }
@@ -110,5 +112,30 @@ class AdminRequestController extends Controller
 
         return redirect()->route('admin.requests.show', $id)
             ->with('success', 'تم تحديث حالة الطلب بنجاح');
+    }
+
+    public function reply(Request $request, $id)
+    {
+        $data = $request->validate([
+            'body' => 'required|string|max:2000',
+        ]);
+
+        $clientRequest = ClientRequest::findOrFail($id);
+
+        Reply::create([
+            'request_id' => $clientRequest->id,
+            'admin_id'   => Auth::guard('admin')->id(),
+            'body'       => $data['body'],
+        ]);
+
+        Notification::create([
+            'user_id'    => $clientRequest->user_id,
+            'request_id' => $clientRequest->id,
+            'type'       => 'reply',
+            'message'    => "ردّ المحاسب على طلبك: {$clientRequest->title}",
+        ]);
+
+        return redirect()->route('admin.requests.show', $id)
+            ->with('success', 'تم إضافة الرد بنجاح');
     }
 }

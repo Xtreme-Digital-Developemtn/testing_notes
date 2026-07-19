@@ -7,6 +7,8 @@ use App\Models\Admin;
 use App\Models\AdminNotification;
 use App\Models\ClientRequest;
 use App\Models\MediaFile;
+use App\Models\Notification;
+use App\Models\Reply;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -82,7 +84,7 @@ class ClientRequestController extends Controller
                 'admin_id'   => $admin->id,
                 'user_id'    => Auth::id(),
                 'request_id' => $clientRequest->id,
-                'message'    => "عميل جديد ({{ Auth::user()->name }}) أرسل طلب جديد: {$clientRequest->title}",
+                'message'    => "عميل جديد (" . Auth::user()->name . ") أرسل طلب جديد: {$clientRequest->title}",
             ]);
         }
 
@@ -125,9 +127,37 @@ class ClientRequestController extends Controller
     public function show($id)
     {
         $clientRequest = ClientRequest::where('user_id', Auth::id())
-            ->with(['mediaFiles', 'messages.admin'])
+            ->with(['mediaFiles', 'messages.admin', 'replies.user', 'replies.admin'])
             ->findOrFail($id);
 
         return view('client.requests.show', compact('clientRequest'));
+    }
+
+    public function reply(Request $request, $id)
+    {
+        $data = $request->validate([
+            'body' => 'required|string|max:2000',
+        ]);
+
+        $clientRequest = ClientRequest::where('user_id', Auth::id())->findOrFail($id);
+
+        Reply::create([
+            'request_id' => $clientRequest->id,
+            'user_id'    => Auth::id(),
+            'body'       => $data['body'],
+        ]);
+
+        $admins = Admin::all();
+        foreach ($admins as $admin) {
+            AdminNotification::create([
+                'admin_id'   => $admin->id,
+                'user_id'    => Auth::id(),
+                'request_id' => $clientRequest->id,
+                'message'    => "علّق العميل " . Auth::user()->name . " على طلب: {$clientRequest->title}",
+            ]);
+        }
+
+        return redirect()->route('client.requests.show', $id)
+            ->with('success', 'تم إضافة تعليقك بنجاح');
     }
 }

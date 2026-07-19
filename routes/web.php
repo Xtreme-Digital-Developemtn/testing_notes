@@ -46,6 +46,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/requests/create', [ClientRequestController::class, 'create'])->name('client.requests.create');
     Route::post('/requests', [ClientRequestController::class, 'store'])->name('client.requests.store');
     Route::get('/requests/{id}', [ClientRequestController::class, 'show'])->name('client.requests.show');
+    Route::post('/requests/{id}/reply', [ClientRequestController::class, 'reply'])->name('client.requests.reply');
 
     Route::get('/notifications', [ClientNotificationController::class, 'index'])->name('client.notifications.index');
 
@@ -66,6 +67,7 @@ Route::prefix('admin')->middleware('auth:admin')->group(function () {
     Route::get('/requests', [AdminRequestController::class, 'index'])->name('admin.requests.index');
     Route::get('/requests/{id}', [AdminRequestController::class, 'show'])->name('admin.requests.show');
     Route::patch('/requests/{id}/status', [AdminRequestController::class, 'updateStatus'])->name('admin.requests.updateStatus');
+    Route::post('/requests/{id}/reply', [AdminRequestController::class, 'reply'])->name('admin.requests.reply');
 
     Route::get('/messages/create', [AdminMessageController::class, 'create'])->name('admin.messages.create');
     Route::post('/messages', [AdminMessageController::class, 'store'])->name('admin.messages.store');

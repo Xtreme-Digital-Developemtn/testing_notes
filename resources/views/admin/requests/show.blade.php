@@ -5,6 +5,10 @@
         <a href="{{ route('admin.requests.index') }}" class="text-primary hover:underline text-sm">&larr; العودة للطلبات</a>
     </div>
 
+    @if(session('success'))
+        <div class="bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 px-4 py-3 rounded-lg text-sm border border-green-200 dark:border-green-800">{{ session('success') }}</div>
+    @endif
+
     <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-8">
         <div class="flex items-center gap-3 mb-6">
             <h1 class="text-2xl font-bold">{{ $clientRequest->title }}</h1>
@@ -83,4 +87,43 @@
             </div>
         </div>
     @endif
+
+    <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-8">
+        <h2 class="text-lg font-bold mb-4">التعليقات والردود</h2>
+
+        @if($clientRequest->replies->isEmpty())
+            <p class="text-gray-400 dark:text-gray-500 text-sm mb-6">لا توجد تعليقات بعد</p>
+        @else
+            <div class="space-y-4 mb-6">
+                @foreach($clientRequest->replies as $reply)
+                    @php $isAdmin = $reply->admin_id !== null; @endphp
+                    <div class="flex gap-3 {{ $isAdmin ? 'flex-row-reverse' : '' }}">
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0 {{ $isAdmin ? 'bg-admin-500 text-white' : 'bg-primary text-white' }}">
+                            {{ $isAdmin ? 'م' : 'ع' }}
+                        </div>
+                        <div class="flex-1 {{ $isAdmin ? 'text-right' : '' }}">
+                            <div class="inline-block bg-gray-50 dark:bg-gray-800 rounded-xl px-4 py-3 max-w-lg {{ $isAdmin ? 'rounded-tr-sm' : 'rounded-tl-sm' }}">
+                                <p class="text-xs font-semibold mb-1 {{ $isAdmin ? 'text-admin-500' : 'text-primary' }}">
+                                    {{ $isAdmin ? $reply->admin->name : $reply->user->name }}
+                                </p>
+                                <p class="text-gray-700 dark:text-gray-300 text-sm">{{ $reply->body }}</p>
+                            </div>
+                            <p class="text-xs text-gray-400 dark:text-gray-500 mt-1 {{ $isAdmin ? 'text-right' : '' }}">{{ $reply->created_at->diffForHumans() }}</p>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        @endif
+
+        <form method="POST" action="{{ route('admin.requests.reply', $clientRequest->id) }}" class="border-t border-gray-200 dark:border-gray-700 pt-4">
+            @csrf
+            <textarea name="body" rows="2" placeholder="اكتب رداً هنا..." required class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-primary focus:border-transparent resize-none"></textarea>
+            @error('body')
+                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+            @enderror
+            <div class="flex justify-end mt-3">
+                <button type="submit" class="bg-admin-500 text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-admin-700 transition-colors">إرسال الرد</button>
+            </div>
+        </form>
+    </div>
 @endsection
