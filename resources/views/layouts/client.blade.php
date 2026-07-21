@@ -12,6 +12,8 @@
                 extend: {
                     colors: {
                         primary: '#6366f1',
+                        'sidebar-light': '#1e293b',
+                        'sidebar-dark': '#0f172a',
                     }
                 }
             }
