@@ -9,9 +9,17 @@ class AdminSeeder extends Seeder
 {
     public function run(): void
     {
-        Admin::create([
+        Admin::firstOrCreate([
+            'email' => 'admin@admin.com',
+        ], [
             'name'     => 'Admin',
-            'email'    => 'admin@admin.com',
+            'password' => bcrypt('password'),
+        ]);
+
+        Admin::firstOrCreate([
+            'email' => 'Nourhan@admin.com',
+        ], [
+            'name'     => 'Nourhan',
             'password' => bcrypt('password'),
         ]);
     }

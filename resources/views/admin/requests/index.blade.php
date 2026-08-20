@@ -76,7 +76,7 @@
                                 </td>
                                 <td class="py-3.5 px-5">@include('components.priority-badge', ['priority' => $req->priority])</td>
                                 <td class="py-3.5 px-5">@include('components.status-badge', ['status' => $req->status])</td>
-                                <td class="py-3.5 px-5 text-gray-500 dark:text-gray-400">{{ $req->admin?->name ?? '-' }}</td>
+                                <td class="py-3.5 px-5 text-gray-500 dark:text-gray-400">{{ $req->solver?->name ?? '-' }}</td>
                                 <td class="py-3.5 px-5 text-gray-400 dark:text-gray-500">{{ $req->created_at->format('Y-m-d') }}</td>
                             </tr>
                         @endforeach
