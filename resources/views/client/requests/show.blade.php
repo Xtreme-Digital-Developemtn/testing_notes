@@ -32,18 +32,28 @@
         </div>
 
         @if($clientRequest->image_path)
+            @php $imageFile = $clientRequest->mediaFiles->where('type', 'image')->first(); @endphp
             <div class="mb-6">
                 <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400 mb-2">الصورة المرفقة</h2>
-                <img src="{{ route('storage.serve', $clientRequest->mediaFiles->where('type', 'image')->first()?->id) }}" alt="صورة الطلب" class="max-w-md rounded-lg border border-gray-200 dark:border-gray-700">
+                <img src="{{ route('storage.inline', $imageFile?->id) }}" alt="صورة الطلب" class="max-w-md rounded-lg border border-gray-200 dark:border-gray-700">
+                <a href="{{ route('storage.serve', $imageFile?->id) }}" class="inline-flex items-center gap-2 mt-2 bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                    تحميل الصورة
+                </a>
             </div>
         @endif
 
         @if($clientRequest->video_path)
-            <div>
+            @php $videoFile = $clientRequest->mediaFiles->where('type', 'video')->first(); @endphp
+            <div class="mb-6">
                 <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400 mb-2">الفيديو المرفق</h2>
                 <video controls class="max-w-md rounded-lg border border-gray-200 dark:border-gray-700">
-                    <source src="{{ route('storage.serve', $clientRequest->mediaFiles->where('type', 'video')->first()?->id) }}">
+                    <source src="{{ route('storage.inline', $videoFile?->id) }}">
                 </video>
+                <a href="{{ route('storage.serve', $videoFile?->id) }}" class="inline-flex items-center gap-2 mt-2 bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                    تحميل الفيديو
+                </a>
             </div>
         @endif
     </div>

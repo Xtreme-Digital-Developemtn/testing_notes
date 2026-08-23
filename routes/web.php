@@ -91,3 +91,18 @@ Route::get('/storage/serve/{id}', function ($id) {
 
     abort(403);
 })->name('storage.serve');
+
+Route::get('/storage/inline/{id}', function ($id) {
+    $file = MediaFile::findOrFail($id);
+
+    if (Auth::guard('admin')->check() || $file->user_id === Auth::id()) {
+        $mime = Storage::disk('local')->mimeType($file->path);
+        $headers = [
+            'Content-Type' => $mime,
+            'Content-Disposition' => 'inline; filename="' . $file->original_name . '"',
+        ];
+        return Storage::disk('local')->response($file->path, $file->original_name, $headers);
+    }
+
+    abort(403);
+})->name('storage.inline');
