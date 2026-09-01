@@ -9,6 +9,7 @@ use App\Models\ClientRequest;
 use App\Models\Notification;
 use App\Models\Reply;
 use App\Models\User;
+use App\Notifications\ClientRequestNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -93,21 +94,33 @@ class AdminRequestController extends Controller
         $clientRequest->update($updateData);
 
         if ($data['status'] === 'in_progress' && $oldStatus !== 'in_progress') {
+            $message = "بدأ العمل على طلبك: {$clientRequest->title}";
+
             Notification::create([
                 'user_id'    => $clientRequest->user_id,
                 'request_id' => $clientRequest->id,
                 'type'       => 'in_progress',
-                'message'    => "بدأ العمل على طلبك: {$clientRequest->title}",
+                'message'    => $message,
             ]);
+
+            $clientRequest->user->notify(
+                new ClientRequestNotification($clientRequest, 'in_progress', $message)
+            );
         }
 
         if ($data['status'] === 'solved' && $oldStatus !== 'solved') {
+            $message = "تم حل طلبك: {$clientRequest->title}";
+
             Notification::create([
                 'user_id'    => $clientRequest->user_id,
                 'request_id' => $clientRequest->id,
                 'type'       => 'solved',
-                'message'    => "تم حل طلبك: {$clientRequest->title}",
+                'message'    => $message,
             ]);
+
+            $clientRequest->user->notify(
+                new ClientRequestNotification($clientRequest, 'solved', $message)
+            );
         }
 
         return redirect()->route('admin.requests.show', $id)
@@ -128,12 +141,18 @@ class AdminRequestController extends Controller
             'body'       => $data['body'],
         ]);
 
+        $message = "ردّ المحاسب على طلبك: {$clientRequest->title}";
+
         Notification::create([
             'user_id'    => $clientRequest->user_id,
             'request_id' => $clientRequest->id,
             'type'       => 'reply',
-            'message'    => "ردّ المحاسب على طلبك: {$clientRequest->title}",
+            'message'    => $message,
         ]);
+
+        $clientRequest->user->notify(
+            new ClientRequestNotification($clientRequest, 'reply', $message)
+        );
 
         return redirect()->route('admin.requests.show', $id)
             ->with('success', 'تم إضافة الرد بنجاح');

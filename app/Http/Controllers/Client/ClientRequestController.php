@@ -9,6 +9,7 @@ use App\Models\ClientRequest;
 use App\Models\MediaFile;
 use App\Models\Notification;
 use App\Models\Reply;
+use App\Notifications\AdminRequestNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -79,13 +80,17 @@ class ClientRequestController extends Controller
         ]);
 
         $admins = Admin::all();
+        $message = "عميل جديد (" . Auth::user()->name . ") أرسل طلب جديد: {$clientRequest->title}";
+
         foreach ($admins as $admin) {
             AdminNotification::create([
                 'admin_id'   => $admin->id,
                 'user_id'    => Auth::id(),
                 'request_id' => $clientRequest->id,
-                'message'    => "عميل جديد (" . Auth::user()->name . ") أرسل طلب جديد: {$clientRequest->title}",
+                'message'    => $message,
             ]);
+
+            $admin->notify(new AdminRequestNotification($clientRequest, $message));
         }
 
         $userId = Auth::id();
@@ -148,13 +153,17 @@ class ClientRequestController extends Controller
         ]);
 
         $admins = Admin::all();
+        $message = "علّق العميل " . Auth::user()->name . " على طلب: {$clientRequest->title}";
+
         foreach ($admins as $admin) {
             AdminNotification::create([
                 'admin_id'   => $admin->id,
                 'user_id'    => Auth::id(),
                 'request_id' => $clientRequest->id,
-                'message'    => "علّق العميل " . Auth::user()->name . " على طلب: {$clientRequest->title}",
+                'message'    => $message,
             ]);
+
+            $admin->notify(new AdminRequestNotification($clientRequest, $message));
         }
 
         return redirect()->route('client.requests.show', $id)
