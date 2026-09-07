@@ -1,3 +1,4 @@
+@php $logoPath = \App\Models\Setting::get('logo_path'); @endphp
 <!DOCTYPE html>
 <html dir="rtl" lang="ar" class="">
 <head>
@@ -15,8 +16,12 @@
 <body class="bg-gray-50 dark:bg-gray-950 min-h-screen flex items-center justify-center px-4">
     <div class="w-full max-w-md">
         <div class="text-center mb-8">
-            <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-indigo-100 dark:bg-indigo-900/30 mb-4">
-                <svg class="w-7 h-7 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-indigo-100 dark:bg-indigo-900/30 mb-4 overflow-hidden">
+                @if($logoPath)
+                    <img src="{{ asset('storage/' . $logoPath) }}" alt="Logo" class="w-14 h-14 object-contain">
+                @else
+                    <svg class="w-7 h-7 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                @endif
             </div>
             <h1 class="text-2xl font-bold text-gray-800 dark:text-white">لوحة الأدمن</h1>
             <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">لوحة تحكم المسؤول</p>

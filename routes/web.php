@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminMessageController;
 use App\Http\Controllers\Admin\AdminNotificationController;
 use App\Http\Controllers\Admin\AdminRequestController;
+use App\Http\Controllers\Admin\AdminSettingsController;
 use App\Http\Controllers\Client\ClientDashboardController;
 use App\Http\Controllers\Client\ClientMessageController;
 use App\Http\Controllers\Client\ClientNotificationController;
@@ -75,6 +76,9 @@ Route::prefix('admin')->middleware('auth:admin')->group(function () {
     Route::get('/clients', [AdminClientController::class, 'index'])->name('admin.clients.index');
 
     Route::get('/notifications', [AdminNotificationController::class, 'index'])->name('admin.notifications.index');
+
+    Route::get('/settings', [AdminSettingsController::class, 'index'])->name('admin.settings.index');
+    Route::post('/settings', [AdminSettingsController::class, 'update'])->name('admin.settings.update');
 });
 
 /*

@@ -1,3 +1,6 @@
+@php
+    $logoPath = \App\Models\Setting::get('logo_path');
+@endphp
 <!DOCTYPE html>
 <html dir="rtl" lang="ar" class="">
 <head>
@@ -38,7 +41,11 @@
     <aside id="sidebar-mobile" class="fixed top-0 right-0 w-72 h-full bg-sidebar-light dark:bg-sidebar-dark text-white z-50 transform translate-x-full md:hidden overflow-y-auto">
         <div class="p-5 border-b border-white/10 flex items-center justify-between">
             <a href="{{ route('client.dashboard') }}" class="flex items-center gap-2">
-                <div class="w-9 h-9 rounded-lg bg-primary flex items-center justify-center font-bold text-white">C</div>
+                @if($logoPath)
+                    <img src="{{ asset('storage/' . $logoPath) }}" alt="Logo" class="w-9 h-9 rounded-lg object-contain bg-white p-0.5">
+                @else
+                    <div class="w-9 h-9 rounded-lg bg-primary flex items-center justify-center font-bold text-white">C</div>
+                @endif
                 <span class="text-lg font-bold">لوحة العميل</span>
             </a>
             <button onclick="closeSidebar()" class="p-1 rounded hover:bg-white/10">
@@ -83,7 +90,11 @@
         <aside class="hidden md:flex w-60 lg:w-64 shrink-0 bg-sidebar-light dark:bg-sidebar-dark text-white flex-col border-l border-white/10 sticky top-0 h-screen overflow-y-auto">
             <div class="p-5 border-b border-white/10">
                 <a href="{{ route('client.dashboard') }}" class="flex items-center gap-2.5">
-                    <div class="w-9 h-9 rounded-lg bg-primary flex items-center justify-center font-bold text-white">C</div>
+                    @if($logoPath)
+                        <img src="{{ asset('storage/' . $logoPath) }}" alt="Logo" class="w-9 h-9 rounded-lg object-contain bg-white p-0.5">
+                    @else
+                        <div class="w-9 h-9 rounded-lg bg-primary flex items-center justify-center font-bold text-white">C</div>
+                    @endif
                     <span class="text-lg font-bold">لوحة العميل</span>
                 </a>
             </div>

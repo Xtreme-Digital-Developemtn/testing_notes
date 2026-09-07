@@ -1,3 +1,4 @@
+@php $logoPath = \App\Models\Setting::get('logo_path'); @endphp
 <!DOCTYPE html>
 <html dir="rtl" lang="ar" class="">
 <head>
@@ -15,8 +16,12 @@
 <body class="bg-gray-50 dark:bg-gray-950 min-h-screen flex items-center justify-center px-4">
     <div class="w-full max-w-md">
         <div class="text-center mb-8">
-            <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-green-100 dark:bg-green-900/30 mb-4">
-                <svg class="w-7 h-7 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
+            <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-green-100 dark:bg-green-900/30 mb-4 overflow-hidden">
+                @if($logoPath)
+                    <img src="{{ asset('storage/' . $logoPath) }}" alt="Logo" class="w-14 h-14 object-contain">
+                @else
+                    <svg class="w-7 h-7 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
+                @endif
             </div>
             <h1 class="text-2xl font-bold text-gray-800 dark:text-white">حساب جديد</h1>
             <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">سجّل حسابك للبدء</p>
