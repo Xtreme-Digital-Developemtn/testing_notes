@@ -100,12 +100,40 @@ Route::get('/storage/inline/{id}', function ($id) {
     $file = MediaFile::findOrFail($id);
 
     if (Auth::guard('admin')->check() || $file->user_id === Auth::id()) {
+        $path = Storage::disk('local')->path($file->path);
         $mime = Storage::disk('local')->mimeType($file->path);
+        $size = filesize($path);
+
         $headers = [
-            'Content-Type' => $mime,
+            'Content-Type'        => $mime,
             'Content-Disposition' => 'inline; filename="' . $file->original_name . '"',
+            'Accept-Ranges'       => 'bytes',
+            'Content-Length'      => $size,
         ];
-        return Storage::disk('local')->response($file->path, $file->original_name, $headers);
+
+        if (str_starts_with($mime, 'video/') || str_starts_with($mime, 'audio/')) {
+            if (request()->hasHeader('Range')) {
+                $range = request()->header('Range');
+                preg_match('/bytes=(\d+)-(\d*)/', $range, $matches);
+                $start = intval($matches[1]);
+                $end = isset($matches[2]) && $matches[2] !== '' ? intval($matches[2]) : $size - 1;
+                $chunkSize = $end - $start + 1;
+
+                header('HTTP/1.1 206 Partial Content');
+                header("Content-Range: bytes {$start}-{$end}/{$size}");
+                header("Content-Length: {$chunkSize}");
+                header("Content-Type: {$mime}");
+                header("Accept-Ranges: bytes");
+
+                $fp = fopen($path, 'r');
+                fseek($fp, $start);
+                echo fread($fp, $chunkSize);
+                fclose($fp);
+                exit;
+            }
+        }
+
+        return response()->file($path, $headers);
     }
 
     abort(403);

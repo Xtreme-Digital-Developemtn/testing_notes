@@ -51,8 +51,9 @@
             @php $videoFile = $clientRequest->mediaFiles->where('type', 'video')->first(); @endphp
             <div class="mb-6">
                 <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400 mb-2">الفيديو المرفق</h2>
-                <video controls class="max-w-md rounded-lg border border-gray-200 dark:border-gray-700">
-                    <source src="{{ route('storage.inline', $videoFile?->id) }}">
+                <video controls class="max-w-md rounded-lg border border-gray-200 dark:border-gray-700" preload="metadata">
+                    <source src="{{ route('storage.inline', $videoFile?->id) }}" type="{{ $videoFile?->mimeType ?? 'video/mp4' }}">
+                    المتصفح لا يدعم عرض الفيديو
                 </video>
                 <a href="{{ route('storage.serve', $videoFile?->id) }}" class="inline-flex items-center gap-2 mt-2 bg-admin-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-admin-700 transition-colors">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
