@@ -68,7 +68,7 @@ class ClientRequestController extends Controller
             'description' => 'required|string',
             'priority'    => 'required|in:low,medium,high',
             'image'       => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
-            'video'       => 'nullable|mimes:mp4,mov|max:2097152',
+            'video'       => 'nullable|mimes:mp4,mov|max:65536',
         ]);
 
         $clientRequest = ClientRequest::create([
