@@ -69,6 +69,7 @@ class ClientRequestController extends Controller
             'priority'    => 'required|in:low,medium,high',
             'image'       => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
             'video'       => 'nullable|mimes:mp4,mov|max:65536',
+            'document'    => 'nullable|mimes:pdf|max:20480',
         ]);
 
         $clientRequest = ClientRequest::create([
@@ -119,6 +120,20 @@ class ClientRequestController extends Controller
                 'user_id'       => $userId,
                 'request_id'    => $clientRequest->id,
                 'type'          => 'video',
+                'path'          => $path,
+                'original_name' => $file->getClientOriginalName(),
+                'size'          => $file->getSize(),
+            ]);
+        }
+
+        if ($request->hasFile('document')) {
+            $file = $request->file('document');
+            $path = $file->store("requests/{$userId}/{$clientRequest->id}", 'local');
+
+            MediaFile::create([
+                'user_id'       => $userId,
+                'request_id'    => $clientRequest->id,
+                'type'          => 'document',
                 'path'          => $path,
                 'original_name' => $file->getClientOriginalName(),
                 'size'          => $file->getSize(),

@@ -45,6 +45,12 @@
                 @error('video')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
             </div>
 
+            <div>
+                <label class="block text-gray-700 dark:text-gray-300 mb-1.5 text-sm font-medium">مستند PDF (اختياري - حد أقصى 20MB)</label>
+                <input type="file" name="document" accept="application/pdf" class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2.5 text-sm file:ml-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:bg-primary file:text-white file:text-sm file:cursor-pointer @error('document') border-red-500 @enderror">
+                @error('document')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+            </div>
+
             <div class="pt-2">
                 <button type="submit" class="bg-primary text-white px-6 py-2.5 rounded-lg hover:bg-indigo-700 text-sm font-medium transition-colors">رفع الطلب</button>
             </div>

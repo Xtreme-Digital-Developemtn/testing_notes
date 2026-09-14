@@ -62,6 +62,36 @@
             </div>
         @endif
 
+        @php $documentFiles = $clientRequest->mediaFiles->where('type', 'document'); @endphp
+        @if($documentFiles->isNotEmpty())
+            <div class="mb-6">
+                <h2 class="text-sm font-semibold text-gray-500 dark:text-gray-400 mb-2">الملفات المرفقة (PDF)</h2>
+                <div class="space-y-3">
+                    @foreach($documentFiles as $doc)
+                        <div class="flex items-center gap-3 bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+                            <div class="w-10 h-10 bg-red-100 dark:bg-red-900/30 rounded-lg flex items-center justify-center">
+                                <svg class="w-5 h-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-gray-700 dark:text-gray-300 truncate">{{ $doc->original_name }}</p>
+                                <p class="text-xs text-gray-400 dark:text-gray-500">{{ round($doc->size / 1024, 1) }} KB</p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <a href="{{ route('storage.inline', $doc->id) }}" target="_blank" class="inline-flex items-center gap-1.5 bg-blue-500 text-white px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-blue-600 transition-colors">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                    عرض
+                                </a>
+                                <a href="{{ route('storage.serve', $doc->id) }}" class="inline-flex items-center gap-1.5 bg-admin-500 text-white px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-admin-700 transition-colors">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                    تحميل
+                                </a>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        @endif
+
         <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
             <h2 class="text-lg font-bold mb-4">تغيير الحالة</h2>
             <form method="POST" action="{{ route('admin.requests.updateStatus', $clientRequest->id) }}" class="flex flex-wrap items-center gap-4">
